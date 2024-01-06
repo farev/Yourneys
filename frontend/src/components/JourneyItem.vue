@@ -147,9 +147,7 @@ export default {
     },
 
     computed:{
-      getPr(){
-        return this.$props;
-      }
+      
     }, 
 
     methods: {
@@ -186,7 +184,8 @@ export default {
                 }
             }
 
-            var post = this.$props.journey.posts[currentIndex];
+            //var post = this.$props.journey.posts[currentIndex];
+            var post = this.journey.posts[currentIndex]
 
             if(post != null){
                 this.ID = post.id;

@@ -126,6 +126,41 @@ def post_create(request):
     else:
         return JsonResponse({'error': 'add somehting here later!...'})
     
+#Edit post
+@api_view(['POST'])
+def post_edit(request, pk):
+    form = PostForm(request.POST)
+    post = Post.objects.filter(created_by=request.user).get(pk=pk)
+    attachment = None
+    attachment_form = AttachmentForm(request.POST, request.FILES)
+
+    if attachment_form.is_valid():
+        attachment = attachment_form.save(commit=False)
+        attachment.created_by = request.user
+        attachment.save()
+
+    if form.is_valid():
+        form.save(commit=False)
+        post.created_by = request.user
+        post.body = form.data['body']
+        post.is_private = form['is_private'].value()
+        post.label = form.data['label']
+        post.save()
+
+        if attachment:
+            post.attachments.add(attachment)
+            
+        journey = Journey.objects.get(id=post.journeyid)
+        #journey.posts.add(post)
+        journey.posts.update(post)
+        journey.save()
+
+        serializer = PostSerializer(post)
+
+        return JsonResponse(serializer.data, safe=False)
+    else:
+        return JsonResponse({'error': 'add somehting here later!...'})
+    
 #Like post
 @api_view(['POST'])
 def post_like(request, pk):

@@ -7,7 +7,7 @@
                 <input type="checkbox" v-model="is_private"> Private
             </label>
 
-            <select v-model="label" class="space-x-5" >
+            <select v-model="label" class="space-x-5">
                 <option value="Start">Start</option>
                 <option value="Update">Update</option>
                 <option value="Milestone">Milestone</option>
@@ -37,7 +37,7 @@ export default {
     props: {
         user: Object,
         posts: Array,
-        journey: String
+        journey: Object
     },
 
     data() {
@@ -57,7 +57,7 @@ export default {
             this.journeyid = this.journey.id;
             console.log('JourneyID', this.journeyid)
             let formData = new FormData()
-            formData.append('image', this.$refs.file.files[0])
+            formData.append('file', this.$refs.file.files[0])
             formData.append('body', this.body)
             formData.append('journeyid', this.journeyid)
             formData.append('label', this.label)

@@ -29,13 +29,13 @@ class Comment(models.Model):
 class PostAttachment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     #image = models.ImageField(upload_to='post_attachments')
-    image = models.FileField(upload_to='post_attachments')
+    file = models.FileField(upload_to='post_attachments', blank=True, null=True)
     #video = models.FileField(upload_to='videos_uploaded',null=True, validators=[FileExtensionValidator(allowed_extensions=['MOV','avi','mp4','webm','mkv'])])    
     created_by = models.ForeignKey(User, related_name='post_attachments', on_delete=models.CASCADE)
 
-    def get_image(self):
-        if self.image:
-            return settings.WEBSITE_URL + self.image.url
+    def get_file(self):
+        if self.file:
+            return settings.WEBSITE_URL + self.file.url
         else:
             return ''
 

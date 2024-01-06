@@ -1,5 +1,5 @@
 <template >
-<div class="">
+<div key="key">
 
 <RouterLink :to="{name: 'postview', params: {id: post.id}}">
     <div class="flex justify-center">
@@ -35,10 +35,10 @@
     </div>
 
     <template v-if="post.attachments.length">
-        <div v-for="image in post.attachments" v-bind:key="image.id" class="">
-            <img v-if="!isVideo(image.get_image)" :src="image.get_image" class="w-full mb-4 rounded-xl object-contain">
+        <div v-for="file in post.attachments" v-bind:key="file.id" class="">
+            <img v-if="!isVideo(file.get_file)" :src="file.get_file" class="w-full mb-4 rounded-xl object-contain">
 
-            <video id="video" v-if="isVideo(image.get_image)" :src="image.get_image" class="w-full mb-4 rounded-xl object-contain" controls autoplay muted=false loop @canplay="isInView()" v-on:scroll="isInView()" ></video>
+            <video v-bind:id="post.id" v-if="isVideo(file.get_file)" :src="file.get_file" class="w-full mb-4 rounded-xl object-contain" controls autoplay muted=false loop @canplay="isInView()"></video>
         </div>
     </template>
 
@@ -104,8 +104,26 @@
 
                 <span class="text-orange-500 text-xs">Report post</span>
             </div>
+
+            <div 
+                class="flex items-center space-x-2"
+                @click="toggleEdit"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-700">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                </svg>
+
+                <span class="text-blue-700 text-xs">Edit post</span>
+            </div>  
         </div>
     </div>
+
+</div>
+
+<div v-if="showEdit" class="bg-white border border-gray-200 rounded-lg">
+                <EditPostForm 
+                    v-bind:user="user" 
+                    v-bind:post="post"/>
 </div>
 </template>
 
@@ -115,6 +133,7 @@ import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import {_} from 'vue-underscore'
+import EditPostForm from './EditPostForm.vue'
 
 export default {
     props: {
@@ -135,15 +154,18 @@ export default {
 
     data() {
         return {
+            key: 0,
             showExtraModal: false,
+            showEdit: false,
             playVideo: false
         }
     },
 
     mounted () {
-        //window.addEventListener('scroll', throttle(this.isInView, 1000));
-        // var throttled = _.throttle(updatePosition, 100);
-        // $(window).scroll(throttled);
+        const throtledInView = this.throttle(this.isInView, 500)
+        window.addEventListener('scroll', throtledInView);
+        //var throttled = _.throttle(this.isInView, 100);
+        //$(window).scroll(throttled);
     },
 
     methods: {
@@ -194,6 +216,10 @@ export default {
             this.showExtraModal = !this.showExtraModal
         },
 
+        toggleEdit() {
+            this.showEdit = !this.showEdit
+        }, 
+
         isVideo(file){
             const isImage = ['.gif','.jpg','.jpeg','.png']; 
             const isVideo =['.mpg', '.mp2', '.mpeg', '.mpe', '.mpv', '.mp4', '.MOV'];
@@ -211,7 +237,7 @@ export default {
 
         isInView() {
             if (document != null) {
-                var video = document.getElementById("video");
+                var video = document.getElementById(this.post.id);
                 if (video != null)
                 {
                     const rect = video.getBoundingClientRect();
@@ -238,9 +264,22 @@ export default {
                 }
             }
         },
-       
+        
+        throttle(mainFunction, delay) {
+            let timerFlag = null; // Variable to keep track of the timer
+
+            // Returning a throttled version 
+            return (...args) => {
+                if (timerFlag === null) { // If there is no timer currently running
+                mainFunction(...args); // Execute the main function 
+                timerFlag = setTimeout(() => { // Set a timer to clear the timerFlag after the specified delay
+                    timerFlag = null; // Clear the timerFlag to allow the main function to be executed again
+                }, delay);
+                }
+            };
+        },
     },
 
-    components: { RouterLink }
+    components: { RouterLink, EditPostForm }
 }
 </script>

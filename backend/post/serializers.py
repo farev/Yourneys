@@ -8,7 +8,7 @@ from .models import Post, PostAttachment, Comment, Trend
 class PostAttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostAttachment
-        fields = ('id', 'get_image',)
+        fields = ('id', 'get_file',)
 
 
 class PostSerializer(serializers.ModelSerializer):
