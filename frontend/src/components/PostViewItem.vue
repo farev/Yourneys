@@ -62,7 +62,7 @@
                 </summary>
 
                 <div class="bg-white border border-gray-200 rounded-lg mt-4">
-                    <FeedForm
+                    <PostForm
                         v-bind:user="null" 
                         v-bind:posts="journey.posts"
                         v-bind:journey="journey"
@@ -114,7 +114,7 @@ import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import PostItem from '../components/PostItem.vue'
-import FeedForm from '../components/FeedForm.vue'
+import PostForm from '../components/PostForm.vue'
 
 
 export default {
@@ -138,7 +138,7 @@ export default {
     },
 
     components: {
-        FeedForm,
+        PostForm,
     },
 
     data() {
@@ -231,6 +231,6 @@ export default {
             this.showExtraModal = !this.showExtraModal
         }
     },
-    components: { RouterLink, PostItem, FeedForm },
+    components: { RouterLink, PostItem, PostForm },
 }
 </script>

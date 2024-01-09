@@ -24,7 +24,7 @@
                         </summary>
 
                         <div class="bg-white border border-gray-200 rounded-lg mt-4">
-                            <FeedForm
+                            <PostForm
                                 v-bind:user="null" 
                                 v-bind:posts="journey.posts"
                                 v-bind:journey="journey"
@@ -68,7 +68,7 @@ import axios from 'axios'
 import PeopleYouMayKnow from '../components/PeopleYouMayKnow.vue'
 import Trends from '../components/Trends.vue'
 import PostItem from '../components/PostItem.vue'
-import FeedForm from '../components/FeedForm.vue'
+import PostForm from '../components/PostForm.vue'
 import EditJourneyForm from '../components/EditJourneyForm.vue'
 
 export default {
@@ -78,7 +78,7 @@ export default {
     PeopleYouMayKnow,
     Trends,
     PostItem,
-    FeedForm,
+    PostForm,
     PostItem,
     EditJourneyForm
 },

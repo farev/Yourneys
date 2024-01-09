@@ -96,7 +96,7 @@ import axios from 'axios'
 import PeopleYouMayKnow from '../components/PeopleYouMayKnow.vue'
 import Trends from '../components/Trends.vue'
 import PostItem from '../components/PostItem.vue'
-import FeedForm from '../components/FeedForm.vue'
+import PostForm from '../components/PostForm.vue'
 import { useUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
 import JourneyForm from '../components/JourneyForm.vue'
@@ -119,7 +119,7 @@ export default {
     PeopleYouMayKnow,
     Trends,
     PostItem,
-    FeedForm,
+    PostForm,
     JourneyForm,
     JourneyItem
 },

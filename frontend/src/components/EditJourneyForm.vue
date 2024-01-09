@@ -21,8 +21,17 @@
 
 <script>
 import axios from 'axios' 
+import { useToastStore } from '@/stores/toast'
 
 export default {
+    setup() {
+        const toastStore = useToastStore()
+
+        return {
+            toastStore,
+        }
+    },
+
     props: {
         user: Object,
         journey: Object
@@ -30,9 +39,9 @@ export default {
 
     data() {
         return {
-            title: '',
-            description: '',
-            topic: '',
+            title: this.journey.title,
+            description: this.journey.description,
+            topic: this.journey.topic,
             is_private: false,
             url: null,
         }
@@ -57,6 +66,7 @@ export default {
                 })
                 .then(response => {
                     console.log('data', response.data)
+                    this.toastStore.showToast(5000, 'The information was saved', 'bg-emerald-500')
 
                     //this.journeys.unshift(response.data)
                     this.title = ''
@@ -65,9 +75,7 @@ export default {
                     this.is_private = false
                     this.url = null
 
-                    /*if (this.user) {
-                        this.user.posts_count += 1
-                    }*/
+                    this.$router.go()
                 })
                 .catch(error => {
                     console.log('error', error)

@@ -25,15 +25,24 @@
                 Attach file
             </label>
 
-            <button class="inline-block py-4 px-6 bg-green-600 text-white rounded-lg">Post</button>
+            <button class="inline-block py-4 px-6 bg-green-600 text-white rounded-lg">Save</button>
         </div>
     </form>
 </template>
 
 <script>
 import axios from 'axios'
+import { useToastStore } from '@/stores/toast'
 
 export default {
+    setup() {
+        const toastStore = useToastStore()
+
+        return {
+            toastStore,
+        }
+    },
+
     props: {
         user: Object,
         post: Object,
@@ -46,7 +55,7 @@ export default {
             //journeyid: '',
             label: this.post.label,
             is_private: this.post.is_private,
-            url: null,
+            url: this.post.url,
         }
     },
 
@@ -71,6 +80,8 @@ export default {
                 })
                 .then(response => {
                     console.log('data', response.data)
+                    this.toastStore.showToast(5000, 'The information was saved', 'bg-emerald-500')
+
                     //console.log('Posts in Journey', this.journey.posts)
 
                     //this.journey.posts.unshift(response.data)
@@ -81,6 +92,8 @@ export default {
                     this.is_private = false
                     this.$refs.file.value = null
                     this.url = null
+
+                    this.$router.go()
                 })
                 .catch(error => {
                     console.log('error', error)

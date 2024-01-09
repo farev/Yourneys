@@ -152,7 +152,7 @@ def post_edit(request, pk):
             
         journey = Journey.objects.get(id=post.journeyid)
         #journey.posts.add(post)
-        journey.posts.update(post)
+        #journey.posts.update(post)
         journey.save()
 
         serializer = PostSerializer(post)
