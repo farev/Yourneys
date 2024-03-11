@@ -40,6 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     people_you_may_know = models.ManyToManyField('self')
 
+    journeys_count = models.IntegerField(default=0)
     posts_count = models.IntegerField(default=0)
 
     is_active = models.BooleanField(default=True)
@@ -78,3 +79,4 @@ class FriendshipRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, related_name='created_friendshiprequests', on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=SENT)
+    journeyid = models.TextField(blank=True, null=True)

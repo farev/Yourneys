@@ -53,7 +53,6 @@ class Post(models.Model):
 
     journeyid = models.TextField(blank=True, null=True)
     label = models.CharField(max_length=10, choices=post_label_choices, default='Update',)
-
     attachments = models.ManyToManyField(PostAttachment, blank=True)
 
     is_private = models.BooleanField(default=False)

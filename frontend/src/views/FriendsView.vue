@@ -1,21 +1,21 @@
 <template>
     <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
         <div class="main-left col-span-1">
-            <div class="p-4 bg-white border border-gray-200 text-center rounded-lg">
+            <div class="p-4 bg-white border border-gray-200 text-center rounded-lg dark:bg-neutral-900 dark:border-gray-950 dark:text-white">
                 <img :src="user.get_avatar" class="mb-6 rounded-full">
                 
                 <p><strong>{{ user.name }}</strong></p>
 
                 <div class="mt-6 flex space-x-8 justify-around">
-                    <p class="text-xs text-gray-500">{{ user.friends_count }} friends</p>
-                    <p class="text-xs text-gray-500">{{ user.posts_count }} posts</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.friends_count }} friends</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} journeys</p>
                 </div>
             </div>
         </div>
 
         <div class="main-center col-span-2 space-y-4">
             <div 
-                class="p-4 bg-white border border-gray-200 rounded-lg"
+                class="p-4 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950"
                 v-if="friendshipRequests.length"
             >
                 <h2 class="mb-6 text-xl">Friendship requests</h2>
@@ -35,7 +35,7 @@
 
                     <div class="mt-6 flex space-x-8 justify-around">
                         <p class="text-xs text-gray-500">{{ user.friends_count }} friends</p>
-                        <p class="text-xs text-gray-500">{{ user.posts_count }} posts</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} journeys</p>
                     </div>
 
                     <div class="mt-6 space-x-4">
@@ -48,11 +48,11 @@
             </div>
 
             <div 
-                class="p-4 bg-white border border-gray-200 rounded-lg grid grid-cols-2 gap-4"
+                class="p-4 bg-white border border-gray-200 rounded-lg grid grid-cols-2 gap-4 dark:bg-neutral-900 dark:border-gray-950 dark:text-white"
                 v-if="friends.length"
             >
                 <div 
-                    class="p-4 text-center bg-gray-100 rounded-lg"
+                    class="p-4 text-center bg-gray-100 rounded-lg dark:bg-neutral-800 dark:border-gray-950"
                     v-for="user in friends"
                     v-bind:key="user.id"
                 >
@@ -65,8 +65,8 @@
                     </p>
 
                     <div class="mt-6 flex space-x-8 justify-around">
-                        <p class="text-xs text-gray-500">{{ user.friends_count }} friends</p>
-                        <p class="text-xs text-gray-500">{{ user.posts_count }} posts</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.friends_count }} friends</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} journeys</p>
                     </div>
                 </div>
             </div>

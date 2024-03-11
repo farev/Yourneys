@@ -1,16 +1,8 @@
 <template>
     <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
-        <div class="main-center col-span-3 space-y-4">
-            <RouterLink :to="{name: 'journeyview', params: {id: journey.id}}">
-                <div class="space-y-4">
-                    <h1><strong>{{ journey.title }}</strong></h1>
-                    <p>Description: {{ journey.description }}</p>
-                    <p>Topic: {{ journey.topic }}</p>
-                </div>
-            </RouterLink>
-
+        <div class="main-center col-span-3 space-y-4 dark:text-white">
             <div 
-                class="p-4 bg-white border border-gray-200 rounded-lg"
+                class="p-4 bg-white border border-gray-200 rounded-lg  dark:bg-neutral-900 dark:border-gray-950"
                 v-if="post.id"
                 v-bind:key="post.id"
             >
@@ -18,20 +10,20 @@
             </div>
 
             <div
-                class="p-4 ml-6 bg-white border border-gray-200 rounded-lg"
+                class="p-4 ml-6 bg-white border border-gray-200 rounded-lg  dark:bg-neutral-900 dark:border-gray-950"
                 v-for="comment in post.comments"
                 v-bind:key="comment.id"
             >
                 <CommentItem v-bind:comment="comment" />
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-lg">
+            <div class="bg-white border border-gray-200 rounded-lg  dark:bg-neutral-900 dark:border-gray-950">
                 <form v-on:submit.prevent="submitForm" method="post">
                     <div class="p-4">  
-                        <textarea v-model="body" class="p-4 w-full bg-gray-100 rounded-lg" placeholder="What do you think?"></textarea>
+                        <textarea v-model="body" class="p-4 w-full bg-gray-100 rounded-lg dark:bg-neutral-700" placeholder="What do you think?"></textarea>
                     </div>
 
-                    <div class="p-4 border-t border-gray-100">
+                    <div class="p-4 border-t border-gray-100 dark:border-gray-950">
                         <button class="inline-block py-4 px-6 bg-green-600 text-white rounded-lg">Comment</button>
                     </div>
                 </form>

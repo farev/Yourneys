@@ -1,6 +1,7 @@
 <template>
-    <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
-        <div class="main-center col-span-3 space-y-4">
+    <div class="max-w-7xl mx-auto grid grid-cols-10 gap-4">
+        <div class="main-left col-span-1"></div>
+        <div class="main-center col-span-6 space-y-4">
             <div class="container">
                 <details>
                     <summary class="list-none mb-2">
@@ -11,7 +12,7 @@
                         </div>
                     </summary>
 
-                    <div class="bg-white border border-gray-200 rounded-lg">
+                    <div class="bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950">
                         <JourneyForm 
                         v-bind:user="user" 
                         v-bind:journeys="journeys"/>
@@ -20,15 +21,15 @@
             </div>
 
             <div 
-                class="p-4 bg-white border border-gray-200 rounded-lg space-y-4"
+                class="p-4 bg-white border border-gray-200 rounded-lg space-y-4 dark:bg-neutral-900 dark:border-gray-950"
                 v-for="post in posts"
                 v-bind:key="post.id"
             >
-                <JourneyItem v-bind:post="post" v-bind:journey="getJourney(post.journeyid)" v-on:deletePost="deletePost"/>
+                <JourneyItem v-bind:post="post" v-bind:journey="getJourney(post.journeyid)"/>
             </div> 
         </div>
 
-        <div class="main-right col-span-1 space-y-4">
+        <div class="main-right col-span-3 space-y-4">
             <PeopleYouMayKnow />
 
             <Trends />
@@ -98,12 +99,12 @@ export default {
         },
 
         getJourney(ID) {
-            console.log("Getting Journey", ID)
+            //console.log("Getting Journey", ID)
             let currentJourney = null;
 
             this.journeys.forEach(journey => {
                 if(journey.id == ID){
-                    console.log("Return Journey", journey)
+                    //console.log("Return Journey", journey)
                     currentJourney = journey
                 } 
             });

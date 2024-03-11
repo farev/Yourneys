@@ -10,7 +10,7 @@
             </p>
         </div>
 
-        <p class="text-gray-600">{{ comment.created_at_formatted }} ago</p>
+        <p class="text-gray-600 dark:text-gray-500">{{ comment.created_at_formatted }} ago</p>
     </div>
 
     <p>{{ comment.body }}</p> 

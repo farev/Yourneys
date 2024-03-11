@@ -1,31 +1,31 @@
 <template>
     <div class="max-w-7xl mx-auto grid grid-cols-2 gap-4">
         <div class="main-left">
-            <div class="p-12 bg-white border border-gray-200 rounded-lg">
-                <h1 class="mb-6 text-2xl">Edit password</h1>
+            <div class="p-12 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950">
+                <h1 class="mb-6 text-2xl dark:text-white">Edit password</h1>
 
-                <p class="mb-6 text-gray-500">
+                <p class="mb-6 text-gray-500 dark:text-gray-400">
                     Here you can change your password!
                 </p>
             </div>
         </div>
 
         <div class="main-right">
-            <div class="p-12 bg-white border border-gray-200 rounded-lg">
+            <div class="p-12 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950 dark:text-white">
                 <form class="space-y-6" v-on:submit.prevent="submitForm">
                     <div>
                         <label>Old password</label><br>
-                        <input type="password" v-model="form.old_password" placeholder="Your old password" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg">
+                        <input type="password" v-model="form.old_password" placeholder="Your old password" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-gray-950">
                     </div>
 
                     <div>
                         <label>New password</label><br>
-                        <input type="password" v-model="form.new_password1" placeholder="Your new password" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg">
+                        <input type="password" v-model="form.new_password1" placeholder="Your new password" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-gray-950">
                     </div>
                     
                     <div>
                         <label>Repeat password</label><br>
-                        <input type="password" v-model="form.new_password2" placeholder="Repeat password" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg">
+                        <input type="password" v-model="form.new_password2" placeholder="Repeat password" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-gray-950">
                     </div>
 
                     <template v-if="errors.length > 0">

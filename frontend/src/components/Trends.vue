@@ -1,6 +1,6 @@
 <template>
-    <div class="p-4 bg-white border border-gray-200 rounded-lg">
-        <h3 class="mb-6 text-xl">Trends</h3>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950">
+        <h3 class="mb-6 text-xl dark:text-white">Trends</h3>
 
         <div class="space-y-4">
             <div 
@@ -8,7 +8,7 @@
                 v-for="trend in trends"
                 v-bind:key="trend.id"
             >
-                <p class="text-xs">
+                <p class="text-xs dark:text-white">
                     <strong>#{{ trend.hashtag }}</strong><br>
                     <span class="text-gray-500">{{ trend.occurences }} posts</span>
                 </p>

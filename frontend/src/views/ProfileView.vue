@@ -1,14 +1,14 @@
 <template>
     <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
         <div class="main-left col-span-1">
-            <div class="p-4 bg-white border border-gray-200 text-center rounded-lg">
+            <div class="p-4 bg-white border border-gray-200 text-center rounded-lg dark:bg-neutral-900 dark:border-gray-950">
                 <img :src="user.get_avatar" class="mb-6 rounded-full">
                 
-                <p><strong>{{ user.name }}</strong></p>
+                <p class="dark:text-white"><strong>{{ user.name }}</strong></p>
 
                 <div class="mt-6 flex space-x-8 justify-around" v-if="user.id">
-                    <RouterLink :to="{name: 'friends', params: {id: user.id}}" class="text-xs text-gray-500">{{ user.friends_count }} friends</RouterLink>
-                    <p class="text-xs text-gray-500">{{ user.posts_count }} posts</p>
+                    <RouterLink :to="{name: 'friends', params: {id: user.id}}" class="text-xs text-gray-500 dark:text-gray-400">{{ user.friends_count }} friends</RouterLink>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} journeys</p>
                 </div>
 
                 <div class="mt-6">
@@ -18,6 +18,14 @@
                         v-if="userStore.user.id !== user.id && can_send_friendship_request"
                     >
                         Send friendship request
+                    </button>
+
+                    <button 
+                        class="inline-block py-4 px-3 bg-red-600 text-xs text-white rounded-lg" 
+                        @click="unfriend"
+                        v-if="userStore.user.id !== user.id && isFriend"
+                    >
+                        Remove friend
                     </button>
 
                     <button 
@@ -49,17 +57,17 @@
 
 
         <div class="main-center col-span-3 space-y-4">
-            <div class="container">
+            <div v-if="userStore.user.id === user.id" class="container">
                 <details>
                     <summary class="list-none mb-2">
-                        <div class="flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <div class="flex items-center justify-center text-green-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="w-8 h-8">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                     </summary>
 
-                    <div class="bg-white border border-gray-200 rounded-lg">
+                    <div class="bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950">
                         <JourneyForm 
                         v-bind:user="user" 
                         v-bind:journeys="journeys"/>
@@ -68,7 +76,7 @@
             </div>
 
             <div 
-                class="p-4 bg-white border border-gray-200 rounded-lg"
+                class="p-4 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950"
                 v-for="journey in journeys"
                 v-bind:key="journey.id"
             >
@@ -131,6 +139,7 @@ export default {
                 id: ''
             },
             can_send_friendship_request: null,
+            isFriend: null
         }
     },
 
@@ -166,7 +175,7 @@ export default {
                 .then(response => {
                     console.log(response.data)
 
-                    this.$router.push('/chat')
+                    this.$router.push(`/chat/${response.data.id}`)
                 })
                 .catch(error => {
                     console.log('error', error)
@@ -192,6 +201,26 @@ export default {
                 })
         },
 
+        unfriend() {
+            axios
+                .post(`/api/friends/${this.$route.params.id}/unfriend/`)
+                .then(response => {
+                    console.log('data', response.data)
+
+                    this.can_send_friendship_request = true
+                    this.isFriend = false
+
+                    if (response.data.message == 'friendship removed') {
+                        this.toastStore.showToast(5000, 'The user was succesfully unfriended', 'bg-emerald-300')
+                    } else {
+                        this.toastStore.showToast(5000, 'Their was a problem!', 'bg-red-300')
+                    }
+                })
+                .catch(error => {
+                    console.log('error', error)
+                })
+        },
+
         getFeed() {
             axios
                 .get(`/api/journey/profile/${this.$route.params.id}/`)
@@ -201,6 +230,7 @@ export default {
                     this.journeys = response.data.journeys
                     this.user = response.data.user
                     this.can_send_friendship_request = response.data.can_send_friendship_request
+                    this.isFriend = !response.data.can_send_friendship_request
                 })
                 .catch(error => {
                     console.log('error', error)

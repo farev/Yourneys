@@ -12,14 +12,20 @@ class Journey(models.Model):
     description = models.TextField(blank=True, null=True)
     topic = models.TextField(blank=True, null=True)
     is_private = models.BooleanField(default=False)
+    only_me = models.BooleanField(default=False)
     on_going = models.BooleanField(default=True)
 
     posts = models.ManyToManyField(Post, blank=True, editable=True)
 
-    reported_by_users = models.ManyToManyField(User, blank=True, related_name='Journey')
+    followed_by_users = models.ManyToManyField(User, blank=True, related_name='followed_journey')
+    follower_count = models.IntegerField(default=0)
+
+    reported_by_users = models.ManyToManyField(User, blank=True, related_name='reported_journey')
 
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, related_name='journey', on_delete=models.CASCADE)
+    companions = models.ManyToManyField(User, blank=True, related_name="companionJourney")
+    groupchat = models.BooleanField(default=False)
 
     class Meta:
         ordering = ('-created_at',)

@@ -1,12 +1,14 @@
 <template>
     <div class="max-w-7xl mx-auto grid grid-cols-2 gap-4">
         <div class="main-left">
-            <div class="p-12 bg-white border border-gray-200 rounded-lg">
-                <h1 class="mb-6 text-2xl">Sign up</h1>
+            <div class="p-12 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950">
+                <h1 class="mb-6 text-2xl dark:text-white">Sign up</h1>
 
-                <p class="mb-6 text-gray-500">
-                    Lorem ipsum dolor sit mate. Lorem ipsum dolor sit mate. Lorem ipsum dolor sit mate.
-                    Lorem ipsum dolor sit mate. Lorem ipsum dolor sit mate. Lorem ipsum dolor sit mate.
+                <p class="mb-6 text-gray-500 dark:text-gray-400">
+                    Yourneys is the perfect place to share and record all of your journeys. 
+                    So go show the world what you are creating, exploring, and experiencing!
+                    It is not about who you are but about what you do. 
+                    Share your journey. 
                 </p>
 
                 <p class="font-bold">
@@ -16,26 +18,26 @@
         </div>
 
         <div class="main-right">
-            <div class="p-12 bg-white border border-gray-200 rounded-lg">
-                <form class="space-y-6" v-on:submit.prevent="submitForm">
+            <div class="p-12 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950">
+                <form class="space-y-6 dark:text-white" v-on:submit.prevent="submitForm">
                     <div>
                         <label>Name</label><br>
-                        <input type="text" v-model="form.name" placeholder="Your full name" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg">
+                        <input type="text" v-model="form.name" placeholder="Your full name" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-gray-950">
                     </div>
 
                     <div>
                         <label>E-mail</label><br>
-                        <input type="email" v-model="form.email" placeholder="Your e-mail address" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg">
+                        <input type="email" v-model="form.email" placeholder="Your e-mail address" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-gray-950">
                     </div>
 
                     <div>
                         <label>Password</label><br>
-                        <input type="password" v-model="form.password1" placeholder="Your password" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg">
+                        <input type="password" v-model="form.password1" placeholder="Your password" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-gray-950">
                     </div>
 
                     <div>
                         <label>Repeat password</label><br>
-                        <input type="password" v-model="form.password2" placeholder="Repeat your password" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg">
+                        <input type="password" v-model="form.password2" placeholder="Repeat your password" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-gray-950">
                     </div>
 
                     <template v-if="errors.length > 0">

@@ -13,6 +13,7 @@ import EditProfileView from '../views/EditProfileView.vue'
 import EditPasswordView from '../views/EditPasswordView.vue'
 import NotificationsView from '../views/NotificationsView.vue'
 import JourneyView from '../views/JourneyView.vue'
+import FollowingView from '../views/FollowingView.vue'
 
 
 const router = createRouter({
@@ -27,6 +28,11 @@ const router = createRouter({
       path: '/feed',
       name: 'feed',
       component: FeedView
+    },
+    {
+      path: '/following',
+      name: 'following',
+      component: FollowingView
     },
     {
       path: '/signup',
@@ -44,8 +50,10 @@ const router = createRouter({
       component: SearchView
     },
     {
-      path: '/chat',
+      path: '/chat/:id',
       name: 'chat',
+      data: true,
+      props: true,
       component: ChatView
     },
     {

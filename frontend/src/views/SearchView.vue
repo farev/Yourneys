@@ -1,9 +1,9 @@
 <template>
     <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
         <div class="main-left col-span-3 space-y-4">
-            <div class="bg-white border border-gray-200 rounded-lg">
+            <div class="bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950">
                 <form v-on:submit.prevent="submitForm" class="p-4 flex space-x-4">  
-                    <input v-model="query" type="search" class="p-4 w-full bg-gray-100 rounded-lg" placeholder="What are you looking for?">
+                    <input v-model="query" type="search" class="p-4 w-full bg-gray-100 rounded-lg dark:bg-neutral-700 dark:border-gray-950 dark:text-white" placeholder="What are you looking for?">
 
                     <button class="inline-block py-4 px-6 bg-green-600 text-white rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -14,31 +14,39 @@
             </div>
 
             <div 
-                class="p-4 bg-white border border-gray-200 rounded-lg grid grid-cols-4 gap-4"
+                class="p-4 bg-white border border-gray-200 rounded-lg grid grid-cols-4 gap-4 dark:bg-neutral-900 dark:border-gray-950"
                 v-if="users.length"
             >
                 <div 
-                    class="p-4 text-center bg-gray-100 rounded-lg"
+                    class="p-4 text-center bg-gray-100 rounded-lg dark:bg-neutral-800"
                     v-for="user in users"
                     v-bind:key="user.id"
                 >
                     <img :src="user.get_avatar" class="mb-6 rounded-full">
                 
-                    <p>
+                    <p class="dark:text-white">
                         <strong>
                             <RouterLink :to="{name: 'profile', params:{'id': user.id}}">{{ user.name }}</RouterLink>
                         </strong>
                     </p>
 
                     <div class="mt-6 flex space-x-8 justify-around">
-                        <p class="text-xs text-gray-500">{{ user.friends_count }} friends</p>
-                        <p class="text-xs text-gray-500">{{ user.posts_count }} posts</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.friends_count }} friends</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} journeys</p>
                     </div>
                 </div>
             </div>
 
             <div 
-                class="p-4 bg-white border border-gray-200 rounded-lg"
+                class="p-4 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950"
+                v-for="journey in journeys"
+                v-bind:key="journey.id"
+            >
+                <JourneyItem v-bind:journey="journey" />
+            </div>
+
+            <div 
+                class="p-4 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950"
                 v-for="post in posts"
                 v-bind:key="post.id"
             >
@@ -59,6 +67,7 @@ import axios from 'axios'
 import PeopleYouMayKnow from '../components/PeopleYouMayKnow.vue'
 import Trends from '../components/Trends.vue'
 import PostItem from '../components/PostItem.vue'
+import JourneyItem from '../components/JourneyItem.vue'
 
 export default {
     name: 'SearchView',
@@ -67,14 +76,15 @@ export default {
     PeopleYouMayKnow,
     Trends,
     PostItem,
-    PostItem
+    JourneyItem
 },
 
     data() {
         return {
             query: '',
             users: [],
-            posts: []
+            posts: [],
+            journeys: [],
         }
     },
 
@@ -91,6 +101,7 @@ export default {
 
                     this.users = response.data.users
                     this.posts = response.data.posts
+                    this.journeys = response.data.journeys
                 })
                 .catch(error => {
                     console.log('error:', error)

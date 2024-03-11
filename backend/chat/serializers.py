@@ -1,16 +1,18 @@
 from rest_framework import serializers
 
 from account.serializers import UserSerializer
+from journey.serializers import JourneySerializer
 
 from .models import Conversation, ConversationMessage
 
 
 class ConversationSerializer(serializers.ModelSerializer):
     users = UserSerializer(read_only=True, many=True)
+    journey = JourneySerializer(read_only=True)
 
     class Meta:
         model = Conversation
-        fields = ('id', 'users', 'modified_at_formatted',)
+        fields = ('id', 'users', 'modified_at_formatted', 'unread_messages', 'journey',)
 
 
 class ConversationMessageSerializer(serializers.ModelSerializer):
@@ -19,13 +21,15 @@ class ConversationMessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ConversationMessage
-        fields = ('id', 'sent_to', 'created_by', 'created_at_formatted', 'body',)
+        fields = ('id', 'sent_to', 'created_by', 'created_at_formatted', 'body', 'read')
 
 
 class ConversationDetailSerializer(serializers.ModelSerializer):
+    users = UserSerializer(read_only=True, many=True)
     messages = ConversationMessageSerializer(read_only=True, many=True)
+    journey = JourneySerializer(read_only=True)
 
     class Meta:
         model = Conversation
-        fields = ('id', 'users', 'modified_at_formatted', 'messages',)
+        fields = ('id', 'users', 'modified_at_formatted', 'messages', 'journey', 'unread_messages')
 

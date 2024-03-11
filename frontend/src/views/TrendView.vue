@@ -2,13 +2,13 @@
     <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
         <div class="main-center col-span-3 space-y-4">
             <div 
-                class="p-4 bg-white border border-gray-200 rounded-lg"
+                class="p-4 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950"
             >
-                <h2 class="text-xl">Trend: #{{ $route.params.id }}</h2>
+                <h2 class="text-xl dark:text-white">Trend: #{{ $route.params.id }}</h2>
             </div>
             
             <div 
-                class="p-4 bg-white border border-gray-200 rounded-lg"
+                class="p-4 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950"
                 v-for="post in posts"
                 v-bind:key="post.id"
             >

@@ -57,7 +57,7 @@ def signup(request):
 
     return JsonResponse({'message': message}, safe=False)
 
-
+#Get list of friends
 @api_view(['GET'])
 def friends(request, pk):
     user = User.objects.get(pk=pk)
@@ -115,6 +115,7 @@ def editpassword(request):
     else:
         return JsonResponse({'message': form.errors.as_json()}, safe=False)
 
+#Send friendship request
 @api_view(['POST'])
 def send_friendship_request(request, pk):
     user = User.objects.get(pk=pk)
@@ -131,7 +132,7 @@ def send_friendship_request(request, pk):
     else:
         return JsonResponse({'message': 'request already sent'})
 
-
+#Handle friend request
 @api_view(['POST'])
 def handle_request(request, pk, status):
     user = User.objects.get(pk=pk)
@@ -139,14 +140,57 @@ def handle_request(request, pk, status):
     friendship_request.status = status
     friendship_request.save()
 
-    user.friends.add(request.user)
-    user.friends_count = user.friends_count + 1
+    if status == "accepted":
+        user.friends.add(request.user)
+        user.friends_count = user.friends_count + 1
+        user.save()
+
+        request_user = request.user
+        request_user.friends_count = request_user.friends_count + 1
+        request_user.save()
+
+        friendship_request.delete()
+
+        notification = create_notification(request, 'accepted_friendrequest', friendrequest_id=friendship_request.id)
+
+    elif status == "rejected": 
+        friendship_request.delete()
+        notification = create_notification(request, 'rejected_friendrequest', friendrequest_id=friendship_request.id)
+
+
+    return JsonResponse({'message': 'friendship request updated'})
+
+#Unfriend
+@api_view(['POST'])
+def unfriend(request, pk):
+    user = User.objects.get(pk=pk)
+
+    user.friends.remove(request.user)
+    user.friends_count = user.friends_count - 1
     user.save()
 
     request_user = request.user
-    request_user.friends_count = request_user.friends_count + 1
+    request_user.friends_count = request_user.friends_count - 1
     request_user.save()
 
-    notification = create_notification(request, 'accepted_friendrequest', friendrequest_id=friendship_request.id)
+    #notification = create_notification(request, 'accepted_friendrequest', friendrequest_id=friendship_request.id)
 
-    return JsonResponse({'message': 'friendship request updated'})
+    return JsonResponse({'message': 'friendship removed'})
+
+#Get list of Friendship Request
+@api_view(['GET'])
+def requests(request, pk, journeyID):
+    user = User.objects.get(pk=pk)
+    requests = []
+
+    requests = FriendshipRequest.objects.filter(created_for=user, status=FriendshipRequest.SENT, journeyid=journeyID)
+    requests = FriendshipRequestSerializer(requests, many=True)
+    requests = requests.data
+
+    #friends = user.friends.all()
+
+    return JsonResponse({
+        #'user': UserSerializer(user).data,
+        #'friends': UserSerializer(friends, many=True).data,
+        'requests': requests
+    }, safe=False)

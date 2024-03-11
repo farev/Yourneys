@@ -1,6 +1,6 @@
 <template>
-    <div class="p-4 bg-white border border-gray-200 rounded-lg">
-            <h3 class="mb-6 text-xl">People you may know</h3>
+    <div class="p-4 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950">
+            <h3 class="mb-6 text-xl dark:text-white">People you may know</h3>
     
             <div class="space-y-4">
                 <div 
