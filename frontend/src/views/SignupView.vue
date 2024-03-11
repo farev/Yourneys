@@ -26,6 +26,11 @@
                     </div>
 
                     <div>
+                        <label>Username</label><br>
+                        <input type="text" v-model="form.username" placeholder="Choose your username" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-gray-950">
+                    </div>
+
+                    <div>
                         <label>E-mail</label><br>
                         <input type="email" v-model="form.email" placeholder="Your e-mail address" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-gray-950">
                     </div>
@@ -74,6 +79,7 @@ export default {
             form: {
                 email: '',
                 name: '',
+                usernmae: '',
                 password1: '',
                 password2: ''
             },
@@ -93,6 +99,10 @@ export default {
                 this.errors.push('Your name is missing')
             }
 
+            if (this.form.username === '') {
+                this.errors.push('Your username is missing')
+            }
+
             if (this.form.password1 === '') {
                 this.errors.push('Your password is missing')
             }
@@ -110,6 +120,7 @@ export default {
 
                             this.form.email = ''
                             this.form.name = ''
+                            this.form.usernmae = ''
                             this.form.password1 = ''
                             this.form.password2 = ''
                         } else {

@@ -14,9 +14,9 @@ SECRET_KEY = 'django-insecure-v*=4ctfyl&pe37%c8rs7oa4hoj3h_4w--q9nxw1j=ebd%91865
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['api.thrive.com']
+ALLOWED_HOSTS = ['api.yourneys.tech']
 
-WEBSITE_URL = 'https://api.thrive.com'
+WEBSITE_URL = 'https://api.yourneys.tech'
 
 
 # Application definition
@@ -41,11 +41,11 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://thrive.com",
+    "http://yourneys.tech",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://thrive.com",
+    "http://yourneys.tech",
 ]
 
 INSTALLED_APPS = [

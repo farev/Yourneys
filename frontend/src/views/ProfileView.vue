@@ -5,10 +5,11 @@
                 <img :src="user.get_avatar" class="mb-6 rounded-full">
                 
                 <p class="dark:text-white"><strong>{{ user.name }}</strong></p>
+                <p> {{ user.username }}</p>
 
                 <div class="mt-6 flex space-x-8 justify-around" v-if="user.id">
                     <RouterLink :to="{name: 'friends', params: {id: user.id}}" class="text-xs text-gray-500 dark:text-gray-400">{{ user.friends_count }} friends</RouterLink>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} journeys</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} yourneys</p>
                 </div>
 
                 <div class="mt-6">

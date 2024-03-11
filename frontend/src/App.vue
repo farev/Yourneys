@@ -27,7 +27,7 @@
                     </RouterLink>
 
                     <RouterLink :to="{name:'chat', params:{id:'0'}}" class="rounded hover:bg-gray-100 hover:ring hover:ring-gray-100 dark:hover:bg-neutral-800 dark:hover:ring-neutral-800">
-                        <div class="flex items-center">
+                        <div :key="unreadMessagesCount" class="flex items-center">
                             <div v-if="unreadMessagesCount" class="relative inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-7 dark:border-neutral-900"></div>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" :stroke="message" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
@@ -36,7 +36,7 @@
                     </RouterLink>
 
                     <RouterLink to="/notifications" class="rounded hover:bg-gray-100 hover:ring hover:ring-gray-100 dark:hover:bg-neutral-800 dark:hover:ring-neutral-800">
-                        <div class="flex items-center" v-on:readNotification="checkNotifications">
+                        <div :key="notificationCount" class="flex items-center" v-on:readNotification="checkNotifications">
                             <div v-if="notificationCount" v-bind:key="notificationCount" class="relative inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-7 dark:border-neutral-900">{{ notificationCount }}</div>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" :stroke="bell" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"></path>
@@ -123,7 +123,8 @@
                 notificationCount: 0,
                 unreadMessagesCount: 0,
                 showMenu: false,
-                toggleDarkMode: false
+                toggleDarkMode: false,
+                chatSocket: null
             }
         },
 
@@ -182,6 +183,9 @@
         
             this.checkNotifications()
             this.checkMessages()
+            //this.chatSocket = new WebSocket (`ws://${window.location.host}/ws/notifications/`)
+            this.chatSocket = new WebSocket (`ws://localhost:8000/ws/notifications/`)
+            this.connectWS()
         },
 
         methods: {
@@ -230,6 +234,7 @@
             },
 
             checkNotifications() {
+                console.log("Check Notifications")
                 axios
                 .get('/api/notifications/check/')
                 .then(response => {
@@ -242,6 +247,7 @@
             },
 
             checkMessages() {
+                console.log("Check Messages")
                 axios
                 .get('/api/chat/check/')
                 .then(response => {
@@ -269,7 +275,39 @@
                     localStorage.setItem('dark-mode', false);
                     this.darkMode = false
                 }
-            }
+            },
+
+            async connectWS() {
+                this.chatSocket = await new WebSocket (`ws://localhost:8000/ws/notifications/`)
+                //this.chatSocket = await new WebSocket (`ws://${window.location.host}/ws/notifications/`)
+
+                console.log('Websocket: ', this.chatSocket)
+
+                this.chatSocket.onerror = function(e) {
+                    console.log('Websocket error: ', e);
+                }
+
+                this.chatSocket.onmessage = (e) => {
+                    console.log('onMessage')
+                    this.checkNotifications()
+                    this.checkMessages()
+                }
+
+                this.chatSocket.onnotifcation = (e) => {
+                    console.log('onNotification')
+                    this.checkNotifications()
+                    this.checkMessages()
+                }
+
+                this.chatSocket.onopen = function(e) {
+                    console.log('onOpnen - chat socket was opened')
+                }
+
+                this.chatSocket.onclose = function(e) {
+                    console.log('onClose - chat socket was closed')
+                }
+            },
+
         }
     }
 </script>

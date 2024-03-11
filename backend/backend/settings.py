@@ -14,9 +14,10 @@ SECRET_KEY = 'django-insecure-+yavo^$4o&8b*ml&-hh$!ylx-cs&$kotv8#wi4ez%18tihnp#2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 WEBSITE_URL = 'http://127.0.0.1:8000'
+WS_URL = 'ws://127.0.0.1:8000'
 
 
 # Application definition
@@ -50,6 +51,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 INSTALLED_APPS = [
     'daphne',
+    'channels',
     'channels_redis',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -103,8 +105,11 @@ ASGI_APPLICATION = 'backend.asgi.application'
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
+        #"BACKEND": "channels.layers.InMemoryChannelLayer",
         "CONFIG": {
             "hosts": [("127.0.0.1", 6379)],
+            #"hosts": ['redis://' + '127.0.0.1' + ':' + '6379' + '/1'],
+
         },
     },
 }

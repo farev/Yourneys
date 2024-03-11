@@ -8,7 +8,7 @@
 
                 <div class="mt-6 flex space-x-8 justify-around">
                     <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.friends_count }} friends</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} journeys</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} yourneys</p>
                 </div>
             </div>
         </div>
@@ -35,7 +35,7 @@
 
                     <div class="mt-6 flex space-x-8 justify-around">
                         <p class="text-xs text-gray-500">{{ user.friends_count }} friends</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} journeys</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} yourneys</p>
                     </div>
 
                     <div class="mt-6 space-x-4">
@@ -66,7 +66,7 @@
 
                     <div class="mt-6 flex space-x-8 justify-around">
                         <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.friends_count }} friends</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} journeys</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.journeys_count }} yourneys</p>
                     </div>
                 </div>
             </div>

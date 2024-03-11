@@ -11,6 +11,9 @@ from post.serializers import PostSerializer
 from post.models import Post
 from notification.utils import create_notification
 
+from channels.layers import get_channel_layer 
+from asgiref.sync import async_to_sync
+
 
 #Create new journey
 @api_view(['POST'])
@@ -223,6 +226,14 @@ def send_companion_request(request, journeyID, pk):
         friendrequest = FriendshipRequest.objects.create(created_for=user, created_by=request.user, journeyid=journey.id)
 
         #notification = create_notification(request, 'companion_request', friendrequest_id=friendrequest.id)
+
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            'notifications', {
+                'type': 'send_notification',
+                'message': 'Send notification'
+            }
+        )
 
         return JsonResponse({'message': 'companion request created'})
     else:

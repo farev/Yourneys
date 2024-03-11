@@ -9,6 +9,8 @@ from journey.models import Journey
 from .models import Conversation, ConversationMessage
 from .serializers import ConversationSerializer, ConversationDetailSerializer, ConversationMessageSerializer
 
+from channels.layers import get_channel_layer 
+from asgiref.sync import async_to_sync
 
 @api_view(['GET'])
 def conversation_list(request):
@@ -108,6 +110,14 @@ def conversation_send_message(request, pk):
 
     serializer = ConversationMessageSerializer(conversation_message)
 
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        'notifications', {
+            'type': 'send_notification',
+            'message': 'Send message notification'
+        }
+    )
+
     return JsonResponse(serializer.data, safe=False)
 
 @api_view(['POST'])
@@ -119,6 +129,14 @@ def readMessage(request, pk):
     conversation = message.conversation
     conversation.unread_messages = False
     conversation.save()
+
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        'notifications', {
+            'type': 'send_notification',
+            'message': 'Send message notification'
+        }
+    )
 
     return JsonResponse({'message' : 'Read message'})
 

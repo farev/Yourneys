@@ -1,5 +1,6 @@
 <template>
-    <div class="max-w-7xl mx-auto grid grid-cols-3 gap-2">
+    <div>
+    <div class="max-w-7xl mx-auto grid grid-cols-3 gap-2" id="entireScreen">        
         <div class="main-left col-span-1 max-h-screen overflow-y-auto">
             <div class="p-2 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950">
                 <div class="space-y-4">
@@ -44,7 +45,7 @@
             </div>
         </div>
 
-        <div v-bind:key="activeConversation.id" class="main-center col-span-2 space-y-2 max-h-screen overflow-y-auto">
+        <div v-bind:key="activeConversation.id" class="main-center col-span-2 space-y-2 max-h-screen overflow-y-auto" id="conversationScreen">
             <div class="bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-gray-950">
                 <div class="p-4 bg-white border-gray-200 rounded-t-lg border-b-4 dark:bg-neutral-900 dark:border-gray-950 sticky top-0">
                     <div v-if="activeConversation.journey" class="flex justify-start mb-2 text-lg dark:text-white">
@@ -94,10 +95,8 @@
                             class="flex w-full mt-2 space-x-3 max-w-md"
                             v-else
                         >
-                        <div v-if="message.read == false">{{ readMessage(message) }}</div>
-
                             <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-950">
-                                <img :src="message.created_by.get_avatar" class="w-[40px] rounded-full">
+                                <img :src="message.created_by.get_avatar" class="w-[40px] rounded-full" @load="readMessage(message)">
                             </div>
                             <div >
                                 <div class="bg-gray-300 rounded-full rounded-bl-lg dark:bg-neutral-700 dark:text-white">
@@ -109,9 +108,9 @@
                     </template>
                 </div>
 
-                <form v-on:submit.prevent="submitForm" class="p-2">
+                <form v-on:submit.prevent="submitForm" v-on:keyup.enter="submitForm" class="p-2">
                     <div class="flex justify-between items-center bg-gray-100 rounded-full border border-gray-200 dark:bg-neutral-700 dark:border-neutral-950"> 
-                        <textarea v-model="body" rows="1" class="p-2 w-full bg-gray-100 rounded-full resize-none text-sm dark:text-white dark:bg-neutral-700" placeholder="Message..."></textarea>
+                        <textarea id="text" v-model="body" rows="1" class="p-2 w-full bg-gray-100 rounded-full resize-none text-sm dark:text-white dark:bg-neutral-700" placeholder="Message..."></textarea>
 
                         <button class="inline-block py-2 px-2 dark:text-white">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -122,6 +121,7 @@
                 </form>
             </div>
         </div>
+    </div>
     </div>
 </template>
 
@@ -136,7 +136,7 @@ export default {
         const userStore = useUserStore()
 
         return {
-            userStore
+            userStore,
         }
     },
 
@@ -149,6 +149,7 @@ export default {
             conversations: [],
             activeConversation: {},
             body: '',
+            chatSocket: null
         }
     },
 
@@ -157,6 +158,10 @@ export default {
         console.log(this.$route.params.id)
         if (this.$route.params.id)
             this.setActiveConversation(this.$route.params.id)
+    },
+
+    mounted() {
+        //this.scrollToBottom()
     },
     
     methods: {
@@ -181,7 +186,7 @@ export default {
                     if (this.conversations.length && this.$route.params.id==0) {
                         this.activeConversation = this.conversations[0].id
                     }
-
+                
                     this.getMessages()
                 })
                 .catch(error => {
@@ -198,36 +203,23 @@ export default {
                     console.log(response.data)
 
                     this.activeConversation = response.data
+                    this.connectWS()
+                    
+                    this.$nextTick(() => {
+                        this.scrollToBottom();
+                    });
                 })
                 .catch(error => {
                     console.log(error)
                 })
-
-            let chatSocket = new WebSocket (`wss://${window.location.host}/ws/${this.activeConversation}/`)
-
-            
-            chatSocket.onerror = function(e) {
-                console.log('Websocket error: ', e);
-            };
-
-            chatSocket.onmessage = function(e) {
-                console.log('onMessage')
-            }
-
-            chatSocket.onopen = function(e) {
-                console.log('onOpnen - chat socket was opened')
-            }
-
-            chatSocket.onclose = function(e) {
-                console.log('onClose - chat socket was closed')
-            }
-            console.log(chatSocket.readyState)
         },
 
         submitForm() {
             console.log('submitForm', this.body)
 
-            if (this.body) {
+            const isWhitespaceString = str => !str.replace(/\s/g, '').length
+
+            if (!isWhitespaceString(this.body)) {
                 axios
                 .post(`/api/chat/${this.activeConversation.id}/send/`, {
                     body: this.body
@@ -236,7 +228,15 @@ export default {
                     console.log(response.data)
 
                     this.activeConversation.messages.push(response.data)
+                    this.chatSocket.send(JSON.stringify({
+                        'type': 'message',
+                        'message': 'new message',
+                    }))
                     this.body = ''
+
+                    this.$nextTick(() => {
+                        this.scrollToBottom();
+                    });
                 })
                 .catch(error => {
                     console.log(error)
@@ -245,15 +245,67 @@ export default {
         },
         
         readMessage(mes) {
-            console.log("read message")
-            if(mes.sent_to.id == this.userStore.user.id) {
+            if(mes.read == false) {
+                console.log("read message")
+                if(mes.sent_to.id == this.userStore.user.id) {
+                    axios
+                    .post(`/api/chat/${mes.id}/read/`)
+                    .then(response => {
+                        console.log(response.data)
+                    })
+                }
+            }  
+        },
+
+        connectWS() {
+            console.log(this.activeConversation.id)
+            this.chatSocket = new WebSocket (`ws://localhost:8000/ws/chat/${this.activeConversation.id}/`)
+
+            console.log('Websocket: ', this.chatSocket)
+
+            this.chatSocket.onerror = function(e) {
+                console.log('Websocket error: ', e);
+            }
+
+            this.chatSocket.onmessage = (e) => {
+                console.log('onMessage')
+                const data = JSON.parse(e.data)
+
+                console.log(this.activeConversation)
                 axios
-                .post(`/api/chat/${mes.id}/read/`)
+                .get(`/api/chat/${this.activeConversation.id}/`)
                 .then(response => {
                     console.log(response.data)
+                    this.activeConversation = response.data
+                    console.log(this.activeConversation)
+
+                    this.$nextTick(() => {
+                        this.scrollToBottom();
+                    });
+                    //this.activeConversation.messages.push(response.data.messages[response.data.messages.length-1])
+                })
+                .catch(error => {
+                    console.log(error)
                 })
             }
-        }
+
+            this.chatSocket.onopen = function(e) {
+                console.log('onOpnen - chat socket was opened')
+            }
+
+            this.chatSocket.onclose = function(e) {
+                console.log('onClose - chat socket was closed')
+            }
+        },
+
+        scrollToBottom() {
+            let conversatioScreen = document.getElementById("conversationScreen")
+
+            if (conversationScreen) {
+                conversationScreen.scrollTop = conversationScreen.scrollHeight;
+                console.log("Scroll to Bottom: ", conversatioScreen.scrollTop) 
+            }
+        },
     }
 }
 </script>

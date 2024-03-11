@@ -18,6 +18,7 @@ def me(request):
         'id': request.user.id,
         'name': request.user.name,
         'email': request.user.email,
+        'username': request.user.username,
         'avatar': request.user.get_avatar()
     })
 
@@ -32,6 +33,7 @@ def signup(request):
     form = SignupForm({
         'email': data.get('email'),
         'name': data.get('name'),
+        'username': data.get('username'),
         'password1': data.get('password1'),
         'password2': data.get('password2'),
     })
@@ -88,14 +90,21 @@ def my_friendship_suggestions(request):
 def editprofile(request):
     user = request.user
     email = request.data.get('email')
+    username = request.data.get('username')
 
     if User.objects.exclude(id=user.id).filter(email=email).exists():
-        return JsonResponse({'message': 'email already exists'})
+        return JsonResponse({'message': 'Email already exists'})
+    
+    elif User.objects.exclude(id=user.id).filter(username=username).exists():
+        return JsonResponse({'message': 'Username already exists'})
+    
     else:
         form = ProfileForm(request.POST, request.FILES, instance=user)
 
         if form.is_valid():
             form.save()
+        else:
+            return JsonResponse({'message': 'Username is invalid'})
         
         serializer = UserSerializer(user)
 

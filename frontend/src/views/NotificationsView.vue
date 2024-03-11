@@ -90,11 +90,13 @@ export default {
             user: {},
             friendshipRequests: [],
             friends: [],
-            journeys: []
+            journeys: [],
+            chatSocket: null,
         };
     },
     mounted() {
         this.getNotifications();
+        this.connectWS()
     },
     methods: {
         getNotifications() {
@@ -127,6 +129,11 @@ export default {
                 else if(notification.type_of_notification == 'journey_follow') {
                     this.$router.push({name: 'journeyview', params: {id: notification.journey_id}})
                 }
+
+                this.chatSocket.send(JSON.stringify({
+                    'type': 'notification',
+                    'message': 'send notification'
+                }))
 
                 this.$emit('readNotification')
             })
@@ -202,7 +209,30 @@ export default {
                     console.log(journey)
                     return journey
             }
-        }
+        },
+
+        async connectWS() {
+                this.chatSocket = await new WebSocket (`ws://localhost:8000/ws/notifications/`)
+                //this.chatSocket = new WebSocket (`ws://${window.location.host}/ws/6c4740da-71b6-4da4-a3a2-2b2b58c08fae/`)
+
+                console.log('Websocket: ', this.chatSocket)
+
+                this.chatSocket.onerror = function(e) {
+                    console.log('Websocket error: ', e);
+                }
+
+                this.chatSocket.onmessage = (e) => {
+                    console.log('onMessage')       
+                }
+
+                this.chatSocket.onopen = function(e) {
+                    console.log('onOpnen - chat socket was opened')
+                }
+
+                this.chatSocket.onclose = function(e) {
+                    console.log('onClose - chat socket was closed')
+                }
+            },
     },
     components: { RouterLink }
 }

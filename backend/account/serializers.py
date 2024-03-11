@@ -5,13 +5,13 @@ from .models import User, FriendshipRequest
 class FriendSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'name', 'email', 'friends_count', 'journeys_count', 'posts_count', 'get_avatar',)
+        fields = ('id', 'name', 'email', 'username', 'friends_count', 'journeys_count', 'posts_count', 'get_avatar',)
 
 class UserSerializer(serializers.ModelSerializer):
     friends = FriendSerializer(read_only=True, many=True)
     class Meta:
         model = User
-        fields = ('id', 'name', 'email', 'friends', 'friends_count', 'journeys_count', 'posts_count', 'get_avatar',)
+        fields = ('id', 'name', 'email', 'username', 'friends', 'friends_count', 'journeys_count', 'posts_count', 'get_avatar',)
 
 
 class FriendshipRequestSerializer(serializers.ModelSerializer):

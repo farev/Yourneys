@@ -26,6 +26,11 @@
                         <input type="email" v-model="form.email" placeholder="Your e-mail address" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-gray-950">
                     </div>
 
+                    <div>
+                        <label>Username</label><br>
+                        <input type="text" v-model="form.username" placeholder="Your username" class="w-full mt-2 py-4 px-6 border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-gray-950">
+                    </div>
+
                     <div id="preview" :key="image" v-if="image" class="w-[200px] mt-3 rounded-xl">
                         <img ref="previmg" :src="image" class="w-full mt-3 rounded-xl" v-on:load="createCropper()"/>
                     </div>
@@ -74,7 +79,8 @@ export default {
         return {
             form: {
                 email: this.userStore.user.email,
-                name: this.userStore.user.name
+                name: this.userStore.user.name,
+                username: this.userStore.user.username
             },
             errors: [],
             cropper: {}, 
@@ -101,6 +107,10 @@ export default {
                 this.errors.push('Your name is missing')
             }
 
+            if (this.form.user === '') {
+                this.errors.push('Your usernmae is invalid')
+            }
+
             if (this.errors.length === 0) {
                 let formData = new FormData()
                 console.log(this.newImg)
@@ -108,6 +118,7 @@ export default {
                 formData.append('avatar', this.newImg)
                 formData.append('name', this.form.name)
                 formData.append('email', this.form.email)
+                formData.append('username', this.form.username)
 
                 axios
                     .post('/api/editprofile/', formData, {
@@ -123,7 +134,8 @@ export default {
                                 id: this.userStore.user.id,
                                 name: this.form.name,
                                 email: this.form.email,
-                                avatar: response.data.user.get_avatar
+                                username: this.form.username,
+                                avatar: response.data.user.get_avatar,
                             })
 
                             this.$router.back()

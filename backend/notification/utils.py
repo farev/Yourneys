@@ -1,8 +1,14 @@
 from .models import Notification
+from .consumers import NotificationConsumer
 
 from post.models import Post
 from account.models import FriendshipRequest
 from journey.models import Journey
+
+from channels.layers import get_channel_layer 
+from asgiref.sync import async_to_sync
+import json
+
 
 # create_notification(request, 'post_like', 'lskjf-j12l3-jlas-jdfa', 'lskjf-j12l3-jlas-jdfa')
 
@@ -50,6 +56,7 @@ def create_notification(request, type_of_notification, post_id=None, journey_id=
         created_for = journey.created_by
         body = f'{request.user.name} started following {journey.title}!'
 
+
     notification = Notification.objects.create(
         body=body,
         type_of_notification=type_of_notification,
@@ -58,5 +65,15 @@ def create_notification(request, type_of_notification, post_id=None, journey_id=
         journey_id=journey_id,
         created_for=created_for
     )
+
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        'notifications', {
+            'type': 'send_notification',
+            'message': 'Send notification'
+        }
+    )
+
+    print(channel_layer)
 
     return notification
